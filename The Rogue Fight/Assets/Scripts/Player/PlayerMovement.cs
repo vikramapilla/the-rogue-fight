@@ -5,10 +5,11 @@ public class PlayerMovement : MonoBehaviour
 {
 
     #region Summary
-    
+
     // Purpose:     Responsible for the movement of the player
+    // Callbacks:   Called from PlayerInput according to the inputs
     // Component:   Player Behaviour
-    
+
     #endregion
 
     #region Editor Variables
@@ -24,8 +25,7 @@ public class PlayerMovement : MonoBehaviour
 
     private Animator _animator;
 
-    private float _moveDirection;
-    private bool _isJumping;
+    private bool _isGrounded; // to check if the player is grounded, used to trigger jump
 
     #endregion
 
@@ -40,21 +40,25 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-
-    private void Update()
+    private void OnCollisionEnter2D(Collision2D collision)
     {
-        CheckForMovement();
-        CheckForJump();
+        // ground collision check to avoid jump while in the air
+        if (collision.collider.tag == "Ground")
+        {
+            _isGrounded = true;
+        }
     }
 
-    private void CheckForMovement()
+    public void Move(float horizontal)
     {
-        _moveDirection = Input.GetAxis("Horizontal");
-
-        // move the player when Horizontal keys are pressed
-        if (_moveDirection != 0)
+        if (horizontal != 0)
         {
-            Move(_moveDirection);
+            Vector3 amountToTranslate;
+            // compute the amount to translate based on the horizontal in the range [-1, 1]
+            amountToTranslate = Vector3.right * horizontal * _moveSpeed * Time.deltaTime;
+
+            transform.Translate(amountToTranslate);
+
             _animator.SetBool("moving", true);
         }
         else
@@ -63,27 +67,9 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    private void CheckForJump()
+    public void Jump()
     {
-        if (Input.GetKeyDown(KeyCode.W))
-        {
-            Jump();
-        }
-    }
-
-    private void Move(float moveDirection)
-    {
-        Vector3 amountToTranslate;
-
-        // compute the amount to translate based on the moveDirection in range [-1, 1]
-        amountToTranslate = Vector3.right * moveDirection * _moveSpeed * Time.deltaTime;
-
-        transform.Translate(amountToTranslate);
-    }
-
-    private void Jump()
-    {
-        if (_isJumping == false)
+        if (_isGrounded)
         {
             StartCoroutine(JumpCoroutine());
         }
@@ -91,35 +77,31 @@ public class PlayerMovement : MonoBehaviour
 
     IEnumerator JumpCoroutine()
     {
-        _isJumping = true;
+        _isGrounded = false;
 
         float startPosition = transform.position.y;
         float endPosition = transform.position.y + _jumpReach; // calculate the end position of the jump
 
         Vector3 amountToTranslate;
+        float delta;
 
+        Debug.Log("Started: " + endPosition);
         // loop until the endPosition is reached
         while (startPosition < endPosition)
         {
+            delta = _jumpSpeed * Time.deltaTime;
+
             // compute the translation amount based on jumpSpeed
-            amountToTranslate = Vector3.up * _jumpSpeed * Time.deltaTime;
+            amountToTranslate = Vector3.up * delta;
 
             transform.Translate(amountToTranslate);
 
-            // set current position to the startPosition
-            startPosition = transform.position.y;
+            // increment startPosition by delta
+            startPosition += delta;
 
             yield return new WaitForSeconds(0.0125f);
         }
-    }
-
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        // ground collision check to avoid jump while in the air
-        if (collision.collider.tag == "Ground")
-        {
-            _isJumping = false;
-        }
+        Debug.Log("Finished: " + transform.position.y);
     }
 
 }

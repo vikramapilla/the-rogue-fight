@@ -17,10 +17,16 @@ public class Weapon : MonoBehaviour
         gameObject.SetActive(false);
     }
 
+    private void Update()
+    {
+        SetVelocity();
+    }
+
     public void SetVelocity()
     {
-        _rb = GetComponent<Rigidbody2D>();
-        _rb.velocity = Vector3.right * _speed;
+        transform.Translate(Vector3.up * 12f * Time.deltaTime);
     }
+
+
 
 }

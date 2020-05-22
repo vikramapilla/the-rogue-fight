@@ -15,6 +15,8 @@ public class PlayerAttack : MonoBehaviour
     [SerializeField] private GameObject _weapon;
     [SerializeField] private GameObject _weaponStartPoint;
 
+    [SerializeField] private GameObject _bloodEffect;
+
     [SerializeField] private float _attackCooldown;
 
     private Animator _animator;
@@ -67,6 +69,15 @@ public class PlayerAttack : MonoBehaviour
         weapon.transform.rotation = _weapon.transform.rotation;
 
         weapon.GetComponent<Weapon>().SetVelocity();
+    }
+
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.collider.tag == "Weapon")
+        {
+            Instantiate(_bloodEffect, transform);
+        }
     }
 
 }

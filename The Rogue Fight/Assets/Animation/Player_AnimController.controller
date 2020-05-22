@@ -200,13 +200,13 @@ AnimatorController:
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 0}
+    m_Controller: {fileID: 9100000}
   - m_Name: shooting
     m_Type: 9
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 0}
+    m_Controller: {fileID: 9100000}
   m_AnimatorLayers:
   - serializedVersion: 5
     m_Name: Base Layer
@@ -234,7 +234,7 @@ AnimatorStateMachine:
     m_Position: {x: 0, y: 200, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -4859763814419222784}
-    m_Position: {x: 0, y: 280, z: 0}
+    m_Position: {x: 130, y: 280, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 5696556280345134146}
     m_Position: {x: 0, y: 360, z: 0}
